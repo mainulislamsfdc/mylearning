@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Agentic AI: 4-Month Roadmap</title>
+<style>
+:root{--bg:#fafaf7;--fg:#1d1d1b;--mut:#6b6b66;--card:#fff;--bd:#e3e3dc;--ac:#3b5bdb;--ok:#2f9e44;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){color-scheme:dark;--bg:#16171a;--fg:#ecebe6;--mut:#9a9a94;--card:#202226;--bd:#33353a;--ac:#7c93f5;--ok:#51cf66}}
+:root[data-theme="dark"]{color-scheme:dark;--bg:#16171a;--fg:#ecebe6;--mut:#9a9a94;--card:#202226;--bd:#33353a;--ac:#7c93f5;--ok:#51cf66}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,-apple-system,Segoe UI,sans-serif}
+main{max-width:760px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:1.5rem;margin:0 0 4px}h2{font-size:1.05rem;margin:28px 0 8px}
+.mut{color:var(--mut);font-size:.9rem}
+.bar{height:8px;background:var(--bd);border-radius:4px;overflow:hidden;margin:10px 0 4px}
+.bar i{display:block;height:100%;width:0;background:var(--ac);transition:width .3s}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:10px;margin:10px 0}
+.card.cur{border-color:var(--ac)}
+summary{cursor:pointer;padding:12px 14px;display:flex;justify-content:space-between;gap:10px;font-weight:600}
+summary span.s{font-weight:400;color:var(--mut);font-size:.85rem;white-space:nowrap}
+.in{padding:0 14px 14px}
+label{display:flex;gap:10px;align-items:flex-start;padding:5px 0;cursor:pointer}
+input[type=checkbox]{margin-top:5px;width:17px;height:17px;accent-color:var(--ok)}
+.dl{margin:8px 0;font-size:.9rem;color:var(--mut)}
+textarea{width:100%;box-sizing:border-box;min-height:56px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:8px;padding:8px;font:inherit;font-size:.9rem}
+#st{position:fixed;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:4px 12px;font-size:.8rem;color:var(--mut)}
+</style></head><body><main>
+<h1>Agentic AI: 4-Month Roadmap</h1>
+<div class="mut">Goal: job-ready Agentic AI engineer. About 12-15 hours per week.</div>
+<div class="bar"><i id="pb"></i></div><div class="mut" id="pt"></div>
+<div id="root"></div></main><div id="st">Loading…</div>
+<script>
+const M=[
+["Month 1: Reliable LLM apps",[
+["Engineering foundations",["GitHub repo agent-lab with clean structure","Pydantic, async/await, pytest","Provider-agnostic LLM client (Ollama + hosted API)","5 unit tests for the client"],"Tested client that swaps providers by config"],
+["Structured outputs and prompting",["JSON schema output with validation and retries","Few-shot and system prompt patterns","Function calling: Ollama vs hosted model","Bill extractor: PDF to validated JSON"],"100% valid JSON on sample bills"],
+["Evaluation",["Golden set of 30 questions","Hit rate@k and MRR","LLM-as-judge scoring","eval.py with a baseline score"],"Baseline eval score"],
+["Advanced RAG",["Chunking experiments","Hybrid search (BM25 + embeddings) and reranking","Query rewriting, metadata filters","Tables via pandas or SQL tools","Re-run eval after each change"],"P1: Bill Assistant v2 with eval report"]]],
+["Month 2: Agentic AI core",[
+["Agent patterns from scratch",["Read Building effective agents","ReAct, plan-and-execute, reflection loops","Step limits, timeouts, tool error handling","Agent with 5 tools and full step logs"],"Agent with readable trajectories"],
+["LangGraph",["State, nodes, conditional edges","Checkpointing and persistence","Human-in-the-loop approval step","Rebuild Week 5 agent in LangGraph"],"Graph with persistence and approval"],
+["Memory, context, tool design",["Conversation trimming and summaries","Long-term memory store","Token budgets and caching","Idempotent tools, clear schemas and errors"],"Agent that remembers across sessions"],
+["MCP in depth",["Server with tools, resources, prompts","Remote transport (streamable HTTP) and auth basics","Connect to a real MCP client","Learn the mcp 2.x migration (MCPServer)"],"P2: Research agent (LangGraph + MCP)"]]],
+["Month 3: Multi-agent and production",[
+["Multi-agent patterns",["Supervisor/worker, handoffs, fan-out/fan-in","Shared state vs message passing","Rebuild in a second framework and compare","A2A protocol overview"],"Planner, researcher, critic agents + comparison"],
+["Production backend",["FastAPI service with streaming (SSE)","Background jobs and queues","Postgres persistence for runs and tool calls","Dockerfile and docker-compose"],"Dockerized async agent API"],
+["Observability and agent evals",["Tracing with Langfuse or OpenTelemetry","Tokens, cost, latency per run","Trajectory and tool-call accuracy evals","Evals in CI (GitHub Actions)"],"Dashboard + CI that fails on eval drop"],
+["Reliability and safety",["Timeouts, retries, model fallbacks","Guardrails and PII handling","Prompt injection attacks and defenses","Least-privilege tools, approval gates","Capstone design doc"],"P3: Deployed multi-agent service + red-team suite"]]],
+["Month 4: ML depth and job readiness",[
+["Transformers and CNNs",["Karpathy: micrograd, makemore, Let’s build GPT","Train a tiny GPT","Train a CNN on CIFAR-10, fine-tune a pretrained one","Revise loss, overfitting, metrics"],"Notebooks + one-page notes"],
+["Fine-tuning (Vast.ai)",["Prepare dataset from your own traces","LoRA/QLoRA with Unsloth or peft + trl","Compare base vs fine-tuned with eval","Write an honest verdict: fine-tune vs prompt vs RAG"],"Fine-tuned model + comparison table"],
+["Serving and optimization (Vast.ai)",["Serve with vLLM, benchmark vs Ollama","Quantization tradeoffs","Model routing: cheap vs strong model","Integrate into capstone"],"P4: Cost/latency report"],
+["Polish and job hunt",["README, architecture diagram, results","3-minute demo video","One blog post","Resume and LinkedIn","5 mock interviews"],"P5: Portfolio of 3-4 pinned repos"]]]];
+let st={done:{},notes:{}},ref=null,tm,W=[];
+const $=id=>document.getElementById(id);
+const flag=t=>$("st").textContent=t;
+try{const l=JSON.parse(localStorage.getItem("p")||"null");if(l)st=l}catch(e){}
+function save(){clearTimeout(tm);tm=setTimeout(async()=>{try{localStorage.setItem("p",JSON.stringify(st))}catch(e){}
+if(ref){try{await ref.set(st);flag("Saved and synced")}catch(e){flag("Sync failed")}}else flag("Saved on this device only")},500)}
+function calc(){let tot=0,dn=0,cur=-1;W.forEach((w,i)=>{let d=0;w.t.forEach((_,j)=>{if(st.done[w.k+"."+j])d++});tot+=w.t.length;dn+=d;
+w.s.textContent=d+"/"+w.t.length;if(d<w.t.length&&cur<0)cur=i;w.el.classList.toggle("cur",i===cur)});
+$("pb").style.width=(dn/tot*100)+"%";$("pt").textContent=dn+" of "+tot+" tasks done"+(cur>=0?" · current: Week "+(cur+1):" · all done!")}
+function build(){const r=$("root");r.innerHTML="";W=[];let n=0;
+M.forEach(([mt,ws])=>{const h=document.createElement("h2");h.textContent=mt;r.append(h);
+ws.forEach(([title,tasks,dl])=>{n++;const k="w"+n,el=document.createElement("details");el.className="card";
+const sm=document.createElement("summary");sm.innerHTML="<div>Week "+n+": "+title+"</div>";const s=document.createElement("span");s.className="s";sm.append(s);el.append(sm);
+const inn=document.createElement("div");inn.className="in";
+tasks.forEach((t,j)=>{const lb=document.createElement("label"),cb=document.createElement("input");cb.type="checkbox";cb.checked=!!st.done[k+"."+j];
+cb.onchange=()=>{if(cb.checked)st.done[k+"."+j]=1;else delete st.done[k+"."+j];calc();save()};
+lb.append(cb,document.createTextNode(t));inn.append(lb)});
+const d=document.createElement("div");d.className="dl";d.textContent="Deliverable: "+dl;inn.append(d);
+const ta=document.createElement("textarea");ta.placeholder="Hours, notes, blockers…";ta.value=st.notes[k]||"";
+ta.oninput=()=>{st.notes[k]=ta.value;save()};inn.append(ta);el.append(inn);r.append(el);W.push({k,t:tasks,s,el})})});
+calc()}
+build();flag("Saved on this device only");
+(async()=>{try{if(!window.claude)return;const db=await claude.use("db"),u=await claude.use("user");if(!db||!u)return;
+const id=await u.id();ref=db.collection("data/users/"+id).doc("progress");
+const snap=await Promise.race([ref.get(),new Promise((_,j)=>setTimeout(j,10000))]);
+if(snap.exists){st=Object.assign({done:{},notes:{}},snap.data());build()}else if(Object.keys(st.done).length)await ref.set(st);
+flag("Synced to your account")}catch(e){ref=null;flag("Saved on this device only")}})();
+</script></body></html>
