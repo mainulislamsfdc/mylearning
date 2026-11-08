@@ -22,12 +22,14 @@ label{display:flex;gap:10px;align-items:flex-start;padding:5px 0;cursor:pointer}
 input[type=checkbox]{margin-top:5px;width:17px;height:17px;accent-color:var(--ok)}
 .dl{margin:8px 0;font-size:.9rem;color:var(--mut)}
 textarea{width:100%;box-sizing:border-box;min-height:56px;background:var(--bg);color:var(--fg);border:1px solid var(--bd);border-radius:8px;padding:8px;font:inherit;font-size:.9rem}
+.nt{margin:12px 0;font-size:.9rem}.nt ul{margin:4px 0 0;padding-left:20px}.nt li{margin:4px 0}
+button{font:inherit;font-size:.85rem;padding:4px 10px;border:1px solid var(--bd);border-radius:6px;background:var(--card);color:var(--fg);cursor:pointer}
 #st{position:fixed;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:4px 12px;font-size:.8rem;color:var(--mut)}
 </style></head><body><main>
 <h1>Agentic AI: 4-Month Roadmap</h1>
 <div class="mut">Goal: job-ready Agentic AI engineer. About 12-15 hours per week.</div>
 <div class="bar"><i id="pb"></i></div><div class="mut" id="pt"></div>
-<div id="root"></div></main><div id="st">Loading…</div>
+<div class="mut" style="margin:8px 0"><button id="ex">Export progress</button> <button id="im">Import progress</button><input type="file" id="fi" hidden accept=".json"></div><div id="root"></div></main><div id="st">Loading…</div>
 <script>
 const M=[
 ["Month 1: Reliable LLM apps",[
@@ -50,6 +52,27 @@ const M=[
 ["Fine-tuning (Vast.ai)",["Prepare dataset from your own traces","LoRA/QLoRA with Unsloth or peft + trl","Compare base vs fine-tuned with eval","Write an honest verdict: fine-tune vs prompt vs RAG"],"Fine-tuned model + comparison table"],
 ["Serving and optimization (Vast.ai)",["Serve with vLLM, benchmark vs Ollama","Quantization tradeoffs","Model routing: cheap vs strong model","Integrate into capstone"],"P4: Cost/latency report"],
 ["Polish and job hunt",["README, architecture diagram, results","3-minute demo video","One blog post","Resume and LinkedIn","5 mock interviews"],"P5: Portfolio of 3-4 pinned repos"]]]];
+const N={
+0:["Vast.ai attempt: curl on the ollama.com and github.com homepages saved HTML, not binaries (tar: not in gzip format). Fix: the official install script, curl -fsSL https://ollama.com/install.sh | sh.",
+"Vast.ai lessons: billing runs while the instance exists (stop or destroy it); filter hosts by Internet Down Mbps (500+) before renting; the groups: cannot find name for group ID message is harmless.",
+"Switched to local: winget install Ollama.Ollama on Windows, restart the terminal, pull llama3.2:3b and nomic-embed-text. The Windows app runs the server in the background; use curl.exe, not curl, in PowerShell.",
+"Built from scratch: RAG (Chroma, chunking, retrieval), a tool-calling agent loop, an MCP server and client, a chat loop, PDF ingestion, a CNN tool (MobileNetV3) and a vision model (moondream).",
+"Model management: ollama list, show, rm, ps. To move storage off C:, setx OLLAMA_MODELS to a simple path, fully quit Ollama from the tray, then open a new terminal.",
+"Model landscape: ChatGPT and Claude are closed weights (API only). Open weights include Qwen, Llama, Gemma, Mistral, Phi, DeepSeek distills and gpt-oss. Other runners: LM Studio, llama.cpp, vLLM, Hugging Face Transformers. Check tags on ollama.com/library before pulling.",
+"Rule of thumb: a 4-bit model needs about 0.6 GB of memory per billion parameters plus context, so a 27B model (about 17 GB) belongs on the 3090, not the 8 GB PC."],
+1:["Ollama’s API is the same locally and on Vast.ai, so one wrapper can swap models by config.","Use a hosted API model for serious agent work; keep Ollama for cheap experiments.","Use absolute paths and sys.executable when launching subprocesses (your project path contains & and spaces)."],
+2:["Your BESCOM bill PDF extracted cleanly (469 characters, 2 chunks), so pypdf works for text PDFs. Scanned PDFs need OCR (easyocr or pytesseract).","The 3B model misread a plain success message from ingest_file. Trust the TOOL/RESULT lines, and make tool messages unambiguous (start with SUCCESS).","Simple filenames like report.pdf help small models extract arguments correctly."],
+3:["Lookups (the bill on a given date) work with RAG; aggregates (average, highest, total) fail because retrieval is not computation. Put both kinds in the golden set.","When an answer is wrong, check the retrieved chunks first: most failures are retrieval, not the model.","Experiments to score: chunk size 200/500/1000, n_results 1/3/5, prompt wording."],
+4:["Tabular data suits tools, not text chunks: parse the table into pandas and expose a query tool.","Add a calculate tool that parses with ast instead of eval(), and tell the model never to do arithmetic itself.","search_docs returns raw chunks so the agent writes the answer; this avoids running two models in a row on 8 GB RAM.","upsert avoids duplicate-ID errors when re-ingesting a file."],
+5:["An agent is a loop: the model asks for a tool, you run it, you feed the result back, repeat until it answers.","Small models drop tool results from the final answer. A system prompt that says to report all tool results helps, and qwen2.5:7b is better at tool use than llama3.2:3b.","Keep the tool count low (2 to 5) and write clear docstrings."],
+7:["Your client.py chat loop keeps the messages list across turns, which is the simplest form of short-term memory.","Test it with a follow-up like: What was the second label again?"],
+8:["mcp 2.x renamed FastMCP to MCPServer, so a server written for 1.x crashed on import and the client only showed Connection closed. Fix used: pin mcp below 2 (quote it in PowerShell); version 1.30.0 worked.","Debug order for Connection closed: run server.py directly to see the real traceback, because the client hides it.","MCP over stdio uses stdout for protocol messages, so never print() in the server. Launch with sys.executable and cwd set to the project folder.","pip show mcp checks the version. The mcp command only exists with mcp[cli]. Activate the venv first."],
+12:["Already applied: _path() uses os.path.basename so file tools stay inside docs/, and calculate uses ast so it cannot run arbitrary code.","Next: test prompt injection with a malicious line inside a PDF."],
+13:["classify_image (MobileNetV3) only knows 1,000 ImageNet labels and confidently mislabels charts or screenshots; describe_image (moondream, a vision-language model) can describe anything.","Training your own CNN on a custom dataset is the real learning step; use Colab’s free GPU to save Vast.ai credits."],
+14:["A 24 GB 3090 handles QLoRA on 7B-class models. Try a tutorial on a small model first to keep paid time short.","Write a setup script before renting; keep downloads and caches under /workspace so they persist."],
+15:["vLLM is built for GPU throughput; compare it against Ollama on the same model.","Ollama cloud models (ollama signin) let you try very large models without local hardware, with usage limits.","Hugging Face GGUF models can be pulled with ollama pull hf.co/user/repo:Q4_K_M."],
+16:["Blog ideas from your own journey: the mcp 2.x pitfall, why small models misread tool results, and RAG vs tools for tables."]};
+function addNotes(p,n){const a=N[n];if(!a)return;const d=document.createElement("div");d.className="nt";const b=document.createElement("b");b.textContent="From our discussions";const u=document.createElement("ul");a.forEach(x=>{const l=document.createElement("li");l.textContent=x;u.append(l)});d.append(b,u);p.append(d)}
 let st={done:{},notes:{}},ref=null,tm,W=[];
 const $=id=>document.getElementById(id);
 const flag=t=>$("st").textContent=t;
@@ -60,6 +83,7 @@ function calc(){let tot=0,dn=0,cur=-1;W.forEach((w,i)=>{let d=0;w.t.forEach((_,j
 w.s.textContent=d+"/"+w.t.length;if(d<w.t.length&&cur<0)cur=i;w.el.classList.toggle("cur",i===cur)});
 $("pb").style.width=(dn/tot*100)+"%";$("pt").textContent=dn+" of "+tot+" tasks done"+(cur>=0?" · current: Week "+(cur+1):" · all done!")}
 function build(){const r=$("root");r.innerHTML="";W=[];let n=0;
+const z=document.createElement("details");z.className="card";z.open=true;z.innerHTML="<summary><div>Week 0: Journey so far</div><span class=\"s\">done</span></summary>";const zi=document.createElement("div");zi.className="in";addNotes(zi,0);z.append(zi);r.append(z);
 M.forEach(([mt,ws])=>{const h=document.createElement("h2");h.textContent=mt;r.append(h);
 ws.forEach(([title,tasks,dl])=>{n++;const k="w"+n,el=document.createElement("details");el.className="card";
 const sm=document.createElement("summary");sm.innerHTML="<div>Week "+n+": "+title+"</div>";const s=document.createElement("span");s.className="s";sm.append(s);el.append(sm);
@@ -67,11 +91,14 @@ const inn=document.createElement("div");inn.className="in";
 tasks.forEach((t,j)=>{const lb=document.createElement("label"),cb=document.createElement("input");cb.type="checkbox";cb.checked=!!st.done[k+"."+j];
 cb.onchange=()=>{if(cb.checked)st.done[k+"."+j]=1;else delete st.done[k+"."+j];calc();save()};
 lb.append(cb,document.createTextNode(t));inn.append(lb)});
-const d=document.createElement("div");d.className="dl";d.textContent="Deliverable: "+dl;inn.append(d);
+const d=document.createElement("div");d.className="dl";d.textContent="Deliverable: "+dl;inn.append(d);addNotes(inn,n);
 const ta=document.createElement("textarea");ta.placeholder="Hours, notes, blockers…";ta.value=st.notes[k]||"";
 ta.oninput=()=>{st.notes[k]=ta.value;save()};inn.append(ta);el.append(inn);r.append(el);W.push({k,t:tasks,s,el})})});
 calc()}
 build();flag("Saved on this device only");
+$("ex").onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(st)],{type:"application/json"}));a.download="roadmap-progress.json";a.click()};
+$("im").onclick=()=>$("fi").click();
+$("fi").onchange=async e=>{try{const o=JSON.parse(await e.target.files[0].text());if(o&&o.done){st=Object.assign({done:{},notes:{}},o);build();save()}}catch(x){flag("Import failed")}};
 (async()=>{try{if(!window.claude)return;const db=await claude.use("db"),u=await claude.use("user");if(!db||!u)return;
 const id=await u.id();ref=db.collection("data/users/"+id).doc("progress");
 const snap=await Promise.race([ref.get(),new Promise((_,j)=>setTimeout(j,10000))]);
